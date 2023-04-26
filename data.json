@@ -1,0 +1,30 @@
+{
+  "Ausbeute": {
+    "Versuch 1": {
+      "tatsächliche_menge": 0.01,
+      "max_menge": 0.01
+    },
+    "Versuch 2": {
+      "tatsächliche_menge": 0.03,
+      "max_menge": 0.02
+    },
+    "Versuch 3": {
+      "tatsächliche_menge": 0.03,
+      "max_menge": 0.03
+    },
+    "Versuch 4": {
+      "tatsächliche_menge": 5.0,
+      "max_menge": 6.0
+    }
+  },
+  "Konzentration": {
+    "Versuch 3": {
+      "stoffmenge": 0.02,
+      "volumen": 0.01
+    },
+    "Versuch 4": {
+      "stoffmenge": 0.05,
+      "volumen": 0.04
+    }
+  }
+}
