@@ -1,14 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 22 09:54:44 2023
-
-@author: Jelena
-"""
 import os
 import json
 import streamlit as st
 import pandas as pd
 import altair as alt
+from jsonbin import load_key, save_key
+import yaml
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
+
+jsonbin_secrets = st.secrets["jsonbin"]
+api_key = jsonbin_secrets["api_key"]
+bin_id = jsonbin_secrets["bin_id"]
+
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+)
+
+fullname, authentication_status, username = authenticator.login('Login', 'main')
+
+if authentication_status == True:   # login successful
+    authenticator.logout('Logout', 'main')   # show logout button
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+    st.stop()
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
+    st.stop()
+
+
 
 def load_data(filename):
     if os.path.isfile(filename):
@@ -36,8 +61,9 @@ def berechne_konzentration(stoffmenge, volumen):
     
     return konzentration
 
+data = load_key(api_key, bin_id, username)
 
-data = load_data("data.json")
+#data = load_data("data.json")
 
 # Seitenpanel zur Auswahl des Tests
 test_choice = st.sidebar.radio("Wähle einen Test aus", ["neuer test", "alte tests"])
@@ -88,12 +114,13 @@ if test_choice == "neuer test":
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
         
             # save values to data dict
+            data["Ausbeute"] = {}
             if test_choice not in data:
                 data["Ausbeute"][testname] = {}
             data["Ausbeute"][testname]["tatsächliche_menge"] = tatsaechliche_menge
             data["Ausbeute"][testname]["max_menge"] = maximale_menge
-            save_data("data.json", data)
-            
+            # save_data("data.json", data)
+            save_key(api_key, bin_id, username, data)            
             
     
     with tab2:
@@ -113,7 +140,7 @@ if test_choice == "neuer test":
                 data["Konzentration"][testname] = {}
             data["Konzentration"][testname]["stoffmenge"] = stoffmenge
             data["Konzentration"][testname]["volumen"] = volumen
-            save_data("data.json", data)
+            save_key(api_key, bin_id, username, data)            
            
             
            # data["test2"]= {}
