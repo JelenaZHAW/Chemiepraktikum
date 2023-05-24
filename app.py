@@ -135,7 +135,7 @@ if test_choice == "neuer test":
             konzentration = berechne_konzentration(stoffmenge, volumen)
             st.write("Die Konzentration beträgt:", konzentration, "mol/L")
             
-            
+            data["Konzentration"] = {}
             if test_choice not in data:
                 data["Konzentration"][testname] = {}
             data["Konzentration"][testname]["stoffmenge"] = stoffmenge
